@@ -1,0 +1,115 @@
+package project1;
+
+import java.util.ArrayList;
+
+/**
+ *
+ * @author Rana
+ */
+public class Person {
+    private String name;
+    private final int id;
+    private static ArrayList <Meeting> myMeetings = new ArrayList <>();
+    private static ArrayList <Meeting> iOrganize = new ArrayList <>();
+
+
+    Person(String name) {
+        this.name = name;
+        this.id = (int)( Math.random() * 10000000) + 1;
+    }
+    
+    public String getName() {
+       return name;
+    }
+    public void setName(String name) {
+       this.name = name;
+    }
+    
+    public int getId() {
+       return id;
+    }
+    
+    public ArrayList <Meeting> getMyMeetings() {
+       return myMeetings;
+    }
+    public void setMyMeetings(ArrayList <Meeting> myMeetings) {
+       this.myMeetings = myMeetings;
+    }
+    
+    public ArrayList <Meeting> getIOrganize() {
+       return iOrganize;
+    }
+    public void setIOrganize(ArrayList <Meeting> iOrganize) {
+       this.iOrganize = iOrganize;
+    }
+    
+    public boolean equals(Person x) {
+        if(!x.name.equals(this.name) || x.id != this.id){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    
+    public void addMeeting(Meeting meeting) {
+        getMyMeetings().add(meeting);
+    }
+
+    void removeMeeting(Meeting meeting) {
+        int count = 0;
+        for(int i = 0; i < getMyMeetings().size(); i++){
+            if(meeting == getMyMeetings().get(i)){
+                count++;
+                getMyMeetings().remove(i);
+                meeting.removeAllAttendees();
+                System.out.println("Meeting succesfully removed.");
+            }
+        }
+       if(count == 0){
+           System.out.println("There is not any " + meeting.getNameM() + " meeting.");
+       }
+    }
+  
+    void organizeMeeting(Meeting meeting) {
+        if(iOrganize.contains(meeting)){
+            System.out.println("You are already organizing this meeting!");
+        }else{
+            iOrganize.add(meeting);
+        }
+    }
+  
+    void cancelMeeting(Meeting meeting){
+        myMeetings.remove(meeting);
+        iOrganize.remove(meeting);
+                
+    }
+  
+    void displayMyMeetings(Person x) {
+        int count = 0;
+        System.out.println("My meetings => ");
+        for(int i = 0; i < getMyMeetings().size(); i++){
+           if(getMyMeetings().get(i).getAttendees().contains(x)){
+               count++;
+               System.out.println(count + ". " + getMyMeetings().get(i).toString());
+           }
+        }
+    }
+    
+    void displayMyOrganizations(Person x) {
+        int count = 0;
+        System.out.println("My organizations => ");
+        for(int i = 0; i < getIOrganize().size(); i++){
+            if(getMyMeetings().get(i).getHost().equals(x)){
+            count++;
+            System.out.println(count + ". " + getIOrganize().get(i).toString());
+            }
+        }
+    }
+    
+    @Override
+    public String toString() {
+       return "Person's =>  Name: " + getName() + "  |  " + "Id: " + getId();
+    }
+  
+}
