@@ -1,0 +1,83 @@
+package project1;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ *
+ * @author Rana
+ */
+public class Meeting {
+    private Date date;
+    private static List <Person> attendees = new ArrayList <>();
+    private final Person host;
+    private String nameM;
+
+    Meeting(String nameM, Date dateN, Person host, ArrayList attendees) {
+        this.nameM = nameM;
+        this.date = dateN;
+        this.host = host;
+        this.attendees = attendees;
+    }
+    
+    public String getNameM() {
+        return nameM;
+    }
+    public Date getDate() {
+        return date;
+    }
+    public void setDate(Date dateN) {
+        this.date = dateN;
+    }
+    
+    public List<Person> getAttendees() {
+        return attendees;
+    }
+    public void setAttendees(List<Person> attendees) {
+        this.attendees = attendees;
+    }
+    
+    public Person getHost() {
+        return host;
+    }
+    
+    public boolean equals(Meeting x) {
+        if ((x.date != this.date) || (x.host != this.host) || (x.attendees != this.attendees)){
+            return false;
+        }
+         else{
+             return true;
+        }
+    }
+    
+    public boolean addAttendee(Person x) {
+        for(int i = 0; i< getAttendees().size(); i++){
+            if(getAttendees().get(i).equals(x.getName())){
+                System.out.println(x.getName() + " is already in the attendee list!");
+                return false;
+            }
+        }
+            attendees.add(x);
+            return true;
+    }
+    
+    public boolean removeAttendee(Person x) {
+        if(attendees.contains(x)) {
+            attendees.remove(x);
+            return true;
+        }
+        System.out.println(x.getName() + " is not in the list.");
+        return false;
+    }
+    
+    public void removeAllAttendees() {
+        attendees.removeAll(attendees);
+    }
+    
+    @Override
+    public String toString() {
+         return "Meeting's =>  Name: " +  getNameM()+ "  |  " + "Host: " + getHost().getName() + "  |  " + "Attendees: " + getAttendees()+ "  |  " + "Date: " + getDate();
+    }
+}
+ 
