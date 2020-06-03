@@ -1,0 +1,264 @@
+package project1;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Scanner;
+
+/**
+ *
+ * @author Rana
+ */
+public class TestClass {
+ static ArrayList <Meeting> allMeetings = new ArrayList();
+ static ArrayList <Person> accountList = new ArrayList();
+ 
+    public static void main(String[] args) {
+    Scanner input = new Scanner(System.in);   
+    
+        int ans = -2;
+        String name = null;
+        Person user;
+        System.out.println("Create a list of users, -1 to continue with menu");
+        while(!"-1".equals(name)){
+        System.out.println("Enter username: ");
+        name = input.next();
+        user = new Person(name);
+        accountList.add(user);
+        }
+        while(ans != 0){
+        System.out.println("------------Main Menu------------");
+        System.out.println("0. Login");
+        System.out.println("1. Create and host a new meeting");
+        System.out.println("2. Cancel a meeting");
+        System.out.println("3. Attend an existing meeting");
+        System.out.println("4. Leave a meeting");
+        System.out.println("5. Display my Meetings");
+        System.out.println("6. Display Meetings organized by me");
+        System.out.println("7. Logout");
+        System.out.println("8. Exit");
+        ans = input.nextInt();
+        if(ans < 0 || ans > 8){
+            System.out.println("Invalid option!");
+        }else if(ans != 0){
+            System.out.println("You must login first!");
+        }
+        }
+        System.out.println("Enter user name to login: ");
+            name = input.next();
+            user = new Person(name);
+            int count = 0;
+            for(int i = 0; i < accountList.size(); i++){
+                if(accountList.get(i).getName().equals(user.getName())){
+                    System.out.println("Logged in...");
+                    count++;
+                }
+            }if(count == 0){
+                System.out.println("We can't found an account like that. Please sign in first!");
+                    System.out.println("---Sign in Menu---");
+                    System.out.println("Enter username: ");
+                    name = input.next();
+                    user = new Person(name);
+                    accountList.add(user);
+                    System.out.println("You have an account now."); 
+            }
+            ans = 1;
+        while(ans > 0 && ans < 8){
+        System.out.println("1. Create and host a new meeting");
+        System.out.println("2. Cancel a meeting");
+        System.out.println("3. Attend an existing meeting");
+        System.out.println("4. Leave a meeting");
+        System.out.println("5. Display my Meetings");
+        System.out.println("6. Display Meetings organized by me");
+        System.out.println("7. Logout");
+        System.out.println("8. Exit");
+        ans = input.nextInt();
+            if(ans < 1 || ans > 8){
+            System.out.println("Invalid option!");
+            }
+            if(ans == 1){
+                createMeeting(user);
+            } 
+            if(ans == 2){
+                cancelMeeting(user);
+            }
+            if(ans == 3){
+                attendMeeting(user);
+            }
+            if(ans == 4){
+                leaveMeeting(user);
+            }
+            if(ans == 5){
+                if(user.getMyMeetings().isEmpty()){
+                    System.out.println("You have no meetings. ");
+                }else{
+                user.displayMyMeetings(user);
+                }
+            }
+            if(ans == 6){
+                 if(user.getIOrganize().isEmpty()){
+                    System.out.println("You have no meetings organized by you. ");
+                }else{
+                user.displayMyOrganizations(user);
+                }
+            }
+            if(ans == 7){
+                System.out.println("Logging out.....");
+                System.out.println("You have to log in to continue.");
+                System.out.println("Enter user name to login: ");
+                name = input.next();
+                user = new Person(name);
+                count = 0;
+            for(int i = 0; i < accountList.size(); i++){
+                if(accountList.get(i).getName().equals(user.getName())){
+                    System.out.println("Logged in...");
+                    count++;
+                }
+            }if(count == 0){
+                System.out.println("We can't found an account like that. Please sign in first!");
+                    System.out.println("---Sign in Menu---");
+                    System.out.println("Enter username: ");
+                    name = input.next();
+                    user = new Person(name);
+                    accountList.add(user);
+                    System.out.println("You have an account now."); 
+            }
+            }
+            
+        }
+        if(ans == 8){
+                System.out.println("Exiting........");
+            }
+    }
+    
+    public static void createMeeting(Person host){
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter the day of the meeting: (dd)");
+        int dd = input.nextInt();
+        System.out.println("Enter the month of the meeting: (mm)");
+        int mm = input.nextInt();
+        System.out.println("Enter the year of the meeting: (yyyy)");
+        int yyyy = input.nextInt();
+        Date date= new Date(yyyy-1900,mm-1,dd);
+        System.out.println("What is the name of the meeting? ");
+        String name = input.next();
+        ArrayList<String> attendees = new ArrayList();
+        Meeting meetingN = new Meeting(name, date, host, attendees);
+        allMeetings.add(meetingN);//allmeetings
+        host.addMeeting(meetingN);//mymeetings
+        host.organizeMeeting(meetingN);//iorganize
+        meetingN.addAttendee(host);
+        System.out.println("");
+        System.out.println(name + " " + date + " created successfully by " + host.getName());
+    }
+
+    
+    public static void cancelMeeting(Person host){
+        int count = 0;
+        for(int i = 0; i < host.getIOrganize().size(); i++){
+            if(host.getIOrganize().get(i).getHost() == host){
+                count++;
+            }
+        }
+        if(count == 0){
+            System.out.println("There are no meetings organized by you. You can only cancel your meetings.");
+        }if(count != 0){
+            int count2 = 0;//sıra
+            for(int i = 0; i < host.getIOrganize().size(); i++){
+                if(host.getIOrganize().get(i).getHost() == host){
+                    count2++;
+                    System.out.println(count2 + ". " + host.getIOrganize().get(i).toString());
+                }
+            }
+            Scanner input = new Scanner(System.in);
+            System.out.println("Which one do you want to cancel? (1, 2, 3...");
+            int ans = input.nextInt();
+            if((ans-1) < 0 || ans > count2){
+                System.out.println("Invalid meeting number!");
+            }else{
+                count2 = 0;
+                for(int i = 0; i < host.getIOrganize().size(); i++){
+                    if(host.getIOrganize().get(i).getHost() == host){
+                        if(count2 == ans){
+                            host.cancelMeeting(host.getIOrganize().get(i));
+                            allMeetings.remove(i);
+                            System.out.println("Meeting cancelled...");
+                        } 
+                    }
+
+                }
+            }
+        }    
+    }
+    
+    public static void attendMeeting(Person user){
+         if(allMeetings.isEmpty()){
+            System.out.println("There are no meetings.");
+        }if(!allMeetings.isEmpty()){
+        for(int i = 0; i < allMeetings.size(); i++){
+            System.out.println((i+1) + ". " + allMeetings.get(i).toString()); 
+        }
+        Scanner input = new Scanner(System.in);
+        System.out.println("Would you like to attend any of them? (Yes & No)");
+        String y = input.next();
+        if (y.equals("Yes") || y.equals("yes")){
+            System.out.println("Which one do you want to attend? (1, 2, 3...");
+            int ans = input.nextInt();
+            if((ans-1) < 0 || (ans-1) > allMeetings.size()){
+                System.out.println("Invalid meeting number!");
+            }else{
+                if(allMeetings.get(ans-1).getAttendees().contains(user)){
+                    System.out.println("You are already attending.");
+                }else{
+                    allMeetings.get(ans-1).addAttendee(user);//allmeetings
+                    user.addMeeting(allMeetings.get(ans-1));//mymeetings
+                    System.out.println("You are now added to the list.");
+                }
+            } 
+        }else if(y.equals("No") || y.equals("no")){
+                    
+        }else{
+            System.out.println("Invalid answer");
+        }   
+        }
+    }
+
+    
+    
+    public static void leaveMeeting(Person user){
+        int count = 0;
+        for(int i = 0; i < user.getMyMeetings().size(); i++){
+            if(user.getMyMeetings().get(i).getAttendees().contains(user)){
+                count++;
+            }
+        }
+        if(count == 0){
+            System.out.println("There are no meetings that you are attending.");
+        }if(count != 0){
+            int count2 = 0;
+            for(int i = 0; i < user.getMyMeetings().size(); i++){
+                if(user.getMyMeetings().get(i).getAttendees().contains(user)){
+                    System.out.println((count2) + ". " + user.getMyMeetings().get(i).toString());
+                }   
+            }
+         Scanner input = new Scanner(System.in);
+         System.out.println("Which meeting do you want to leave? (1, 2, 3...");
+         int ans = input.nextInt();
+         if((ans-1) < 0 || ans > count2){
+                System.out.println("Invalid meeting number!");
+            }else{
+               count2 = 0;
+               for(int i = 0; i < user.getMyMeetings().size(); i++){
+                if(user.getMyMeetings().get(i).getAttendees().contains(user)){
+                    if(count2 == ans){
+                        user.removeMeeting(allMeetings.get(i));
+                        allMeetings.get(i).removeAttendee(user); 
+                    }
+                   
+                }   
+            }
+               
+            }
+        } 
+    }
+   
+}
